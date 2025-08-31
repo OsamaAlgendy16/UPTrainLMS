@@ -1,0 +1,9 @@
+﻿@{
+    ViewData["Title"] = "Payment Success";
+}
+
+<div class="alert alert-success mt-5 text-center">
+    <h2>✅ Payment Successful!</h2>
+    <p>@ViewBag.Message</p>
+    <a asp-area="Customer" asp-controller="Courses" asp-action="Index" class="btn btn-primary mt-3">Back to Courses</a>
+</div>

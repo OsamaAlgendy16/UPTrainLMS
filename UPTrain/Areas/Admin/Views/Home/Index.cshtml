@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">📊 Admin Dashboard</h1>
+
+    <div class="row g-4">
+        <!-- g-4 يعطي فراغ بين الكروت -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card text-center shadow-lg p-4 bg-white rounded dashboard-card">
+                <h4>Total Courses</h4>
+                <p class="display-4">@ViewBag.TotalCourses</p>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card text-center shadow-lg p-4 bg-white rounded dashboard-card">
+                <h4>Total Users</h4>
+                <p class="display-4">@ViewBag.TotalUsers</p>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card text-center shadow-lg p-4 bg-white rounded dashboard-card">
+                <h4>Total Enrollments</h4>
+                <p class="display-4">@ViewBag.TotalEnrollments</p>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card text-center shadow-lg p-4 bg-white rounded dashboard-card">
+                <h4>Total Quizzes</h4>
+                <p class="display-4">@ViewBag.TotalQuizzes</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    h1 {
+        font-weight: 700;
+        color: #343a40;
+    }
+
+    .dashboard-card {
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        min-height: 180px; /* كروت أكبر */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .dashboard-card h4 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #495057;
+            margin-bottom: 0.8rem;
+        }
+
+        .dashboard-card p.display-4 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #0d6efd; /* Bootstrap primary color */
+            margin: 0;
+        }
+
+    
+
+    {
+        font-size: 2rem;
+    }
+
+    }
+
+
+    {
+        font-size: 1.8rem;
+    }
+
+    }
+</style>
