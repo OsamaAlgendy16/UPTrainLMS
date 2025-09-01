@@ -25,6 +25,7 @@
     <Folder Include="Areas\Customer\Models\" />
     <Folder Include="Areas\Identity\Data\" />
     <Folder Include="Areas\Identity\Models\" />
+    <Folder Include="wwwroot\images\courses\" />
   </ItemGroup>
 
 </Project>

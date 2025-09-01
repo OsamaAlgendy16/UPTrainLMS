@@ -90,23 +90,6 @@ namespace UPTrain.Areas.Admin.Controllers
             return View(lesson);
         }
 
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var lesson = await _lessonRepo.GetOneAsync(l => l.LessonId == id);
-            if (lesson == null)
-                return NotFound();
-
-            int courseId = lesson.CourseId;
-
-            await _lessonRepo.Delete(lesson);
-            var result = await _lessonRepo.CommitAsync();
-
-            if (result)
-                return RedirectToAction("Index", new { courseId });
-
-            ModelState.AddModelError("", "An error occurred while deleting the lesson.");
-            return View(lesson);
-        }
+  
     }
 }

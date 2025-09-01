@@ -1,14 +1,58 @@
-﻿@model UPTrain.Models.Courses
+﻿@model Courses
 @{
     ViewData["Title"] = "Create Course";
 }
+
+<style>
+    body {
+        background-color: #121212; 
+        color: #e0e0e0; 
+    }
+
+    .card {
+        background-color: #1e1e1e; 
+        color: #e0e0e0;
+        border: 1px solid #333; 
+    }
+
+    .card-header {
+        background-color: #2a2a2a !important; 
+        border-bottom: 1px solid #444;
+    }
+
+    .form-control, .form-select {
+        background-color: #333; 
+        color: #e0e0e0;
+        border: 1px solid #555;
+    }
+
+        .form-control::placeholder {
+            color: #888; 
+        }
+
+    .btn-primary {
+        background-color: #007bff; 
+        border-color: #007bff;
+    }
+
+    .btn-outline-secondary {
+        color: #888;
+        border-color: #888;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #444;
+            color: #e0e0e0;
+            border-color: #e0e0e0;
+        }
+</style>
 
 <div class="mt-5 px-5">
     <div class="row justify-content-center">
         <div class="col-12 col-lg-10">
             <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0"><i class="fas fa-plus-circle"></i> Create New Course</h2>
+                <div class="card-header">
+                    <h2 class="mb-0"><i class="fas fa-plus-circle me-2"></i> Create New Course</h2>
                 </div>
                 <div class="card-body p-4">
                     @if (TempData["ErrorMessage"] != null)
@@ -39,30 +83,23 @@
                             <span asp-validation-for="Category" class="text-danger"></span>
                         </div>
 
+                  
+
                         <div class="mb-3">
-                            <label asp-for="ImageUrl" class="form-label fw-bold"></label>
-                            <input asp-for="ImageUrl" class="form-control" type="text" placeholder="Enter image URL" />
-                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                            <div class="form-text">Enter a valid image URL for the course thumbnail</div>
+                            <label asp-for="Price" class="form-label fw-bold"></label>
+                            <input asp-for="Price" class="form-control" type="number" placeholder="Enter image URL" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                            <div class="form-text">Enter valid price number</div>
                         </div>
 
-                        <!-- Dropdown لاختيار الـ Creator -->
-                        <div class="mb-3">
-                            <label asp-for="CreatedBy" class="form-label fw-bold"></label>
-                            <select asp-for="CreatedBy" class="form-select" asp-items="ViewBag.Users">
-                                <option value="">-- Select Creator --</option>
-                            </select>
-                            <span asp-validation-for="CreatedBy" class="text-danger"></span>
-                        </div>
-
+                     
                         <div class="d-flex justify-content-between mt-4">
                             <a asp-action="Index" class="btn btn-outline-secondary">
                                 <i class="fas fa-arrow-left"></i> Back to List
                             </a>
                             <button type="submit" class="btn btn-primary">Save</button>
                         </div>
-                    </form> <!-- تأكد ان الفورم مغلق هنا -->
-
+                    </form>
                 </div>
             </div>
         </div>

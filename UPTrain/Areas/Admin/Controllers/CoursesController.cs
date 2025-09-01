@@ -4,32 +4,28 @@ using UPTrain.Data;
 using UPTrain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using UPTrain.IRepositories;
+using System.Linq.Expressions;
 
 namespace UPTrain.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class CoursesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICourseRepository _courseRepo;
         private readonly UserManager<User> _userManager;
 
-        public CoursesController(ApplicationDbContext context, UserManager<User> userManager)
+        public CoursesController(ICourseRepository courseRepo, UserManager<User> userManager)
         {
-            _context = context;
+            _courseRepo = courseRepo;
             _userManager = userManager;
         }
 
-      
         public async Task<IActionResult> Index()
         {
-            var courses = await _context.Courses
-                                        .Include(c => c.Lessons)
-                                        .Include(c => c.Quizzes)
-                                        .Include(c => c.Creator)
-                                        .ToListAsync();
+            var courses = await _courseRepo.GetAllAsync();
             return View(courses);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -39,95 +35,72 @@ namespace UPTrain.Areas.Admin.Controllers
             return View();
         }
 
-      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Courses course)
         {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    course.CreatedDate = DateTime.Now;
-                    _context.Courses.Add(course);
-                    await _context.SaveChangesAsync();
 
-                    TempData["SuccessMessage"] = "Course created successfully!";
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "An error occurred: " + ex.Message);
-                }
+          
+            course.CreatedDate = DateTime.Now;
+            await _courseRepo.AddAsync(course);
+
+            TempData["SuccessMessage"] = "Course created successfully!";
+            await _courseRepo.CommitAsync();
+
+            
+
+            return RedirectToAction(nameof(Index));
+
+          
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit([FromRoute] int id)
+        {
+            var course = await _courseRepo.GetOneAsync(c => c.CourseId == id);
+
+            if (course is not null)
+            {
+                var users = await _userManager.Users.ToListAsync();
+                ViewBag.Users = new SelectList(users, "Id", "UserName", course.CreatedBy);
+                return View(course);
             }
 
-            var users = await _userManager.Users.ToListAsync();
-            ViewBag.Users = new SelectList(users, "Id", "UserName", course.CreatedBy);
-            return View(course);
+            return NotFound();
         }
 
-     
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            if (id <= 0) return BadRequest();
-
-            var course = await _context.Courses.FindAsync(id);
-            if (course == null) return NotFound();
-
-            var users = await _userManager.Users.ToListAsync();
-            ViewBag.Users = new SelectList(users, "Id", "UserName", course.CreatedBy);
-
-            return View(course);
-        }
-
-        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Courses course)
+        public async Task<IActionResult> Edit(Courses course)
         {
-            if (id != course.CourseId) return BadRequest();
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    var existingCourse = await _context.Courses.FindAsync(id);
-                    if (existingCourse == null) return NotFound();
-
-                    existingCourse.Title = course.Title;
-                    existingCourse.Description = course.Description;
-                    existingCourse.Category = course.Category;
-                    existingCourse.ImageUrl = course.ImageUrl;
-                    existingCourse.CreatedBy = course.CreatedBy;
-                    existingCourse.UpdatedDate = DateTime.Now;
-
-                    _context.Courses.Update(existingCourse);
-                    await _context.SaveChangesAsync();
-
-                    TempData["SuccessMessage"] = "Course updated successfully!";
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "An error occurred: " + ex.Message);
-                }
+                var users = await _userManager.Users.ToListAsync();
+                ViewBag.Users = new SelectList(users, "Id", "UserName", course.CreatedBy);
+                return View(course);
             }
 
-            var users = await _userManager.Users.ToListAsync();
-            ViewBag.Users = new SelectList(users, "Id", "UserName", course.CreatedBy);
-            return View(course);
+
+            course.UpdatedDate = DateTime.Now;
+            await _courseRepo.Update(course);
+
+            TempData["SuccessMessage"] = "Course updated successfully!";
+            await _courseRepo.CommitAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
 
-        public IActionResult Delete([FromRoute] int id)
-        {
-            var Cinema = _context.Courses.Find(id);
 
-            if (Cinema is not null)
+
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var course = await _courseRepo.GetOneAsync(c => c.CourseId == id);
+
+            if (course is not null)
             {
-                _context.Remove(Cinema);
-                _context.SaveChanges();
+               await _courseRepo.Delete(course);
+                await _courseRepo.CommitAsync();
 
                 return RedirectToAction(nameof(Index));
             }
