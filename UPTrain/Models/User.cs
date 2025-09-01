@@ -11,7 +11,7 @@ namespace UPTrain.Models
         [StringLength(100)]
         [Display(Name = "FullName")]
         public string FullName { get; set; } = string.Empty;
-        public string Role { get; set; } = "user";
+        public string Role { get; set; } = "Cutomer";
        
         public virtual ICollection<Courses> CreatedCourses { get; set; } = new List<Courses>();
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();

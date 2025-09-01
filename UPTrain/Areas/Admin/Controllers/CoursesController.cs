@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UPTrain.Data;
 using UPTrain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using UPTrain.IRepositories;
-using System.Linq.Expressions;
 
 namespace UPTrain.Areas.Admin.Controllers
 {
@@ -37,61 +35,31 @@ namespace UPTrain.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Courses course)
+        public async Task<IActionResult> Create(Courses course, IFormFile? ImageUrl)
         {
+           
+            if (ImageUrl is not null && ImageUrl.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageUrl.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images", fileName);
 
-          
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await ImageUrl.CopyToAsync(stream);
+                }
+
+                course.ImageUrl = "/images/" + fileName; 
+            }
+           
+
             course.CreatedDate = DateTime.Now;
+
             await _courseRepo.AddAsync(course);
+            await _courseRepo.CommitAsync();
 
             TempData["SuccessMessage"] = "Course created successfully!";
-            await _courseRepo.CommitAsync();
-
-            
-
-            return RedirectToAction(nameof(Index));
-
-          
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit([FromRoute] int id)
-        {
-            var course = await _courseRepo.GetOneAsync(c => c.CourseId == id);
-
-            if (course is not null)
-            {
-                var users = await _userManager.Users.ToListAsync();
-                ViewBag.Users = new SelectList(users, "Id", "UserName", course.CreatedBy);
-                return View(course);
-            }
-
-            return NotFound();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Courses course)
-        {
-            if (!ModelState.IsValid)
-            {
-                var users = await _userManager.Users.ToListAsync();
-                ViewBag.Users = new SelectList(users, "Id", "UserName", course.CreatedBy);
-                return View(course);
-            }
-
-
-            course.UpdatedDate = DateTime.Now;
-            await _courseRepo.Update(course);
-
-            TempData["SuccessMessage"] = "Course updated successfully!";
-            await _courseRepo.CommitAsync();
-
             return RedirectToAction(nameof(Index));
         }
-
-
-
 
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -99,9 +67,10 @@ namespace UPTrain.Areas.Admin.Controllers
 
             if (course is not null)
             {
-               await _courseRepo.Delete(course);
+                await _courseRepo.Delete(course);
                 await _courseRepo.CommitAsync();
 
+                TempData["SuccessMessage"] = "Course deleted successfully!";
                 return RedirectToAction(nameof(Index));
             }
 
