@@ -21,7 +21,8 @@ namespace UPTrain.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var courses = await _courseRepo.GetAllAsync();
+            var courses = await _courseRepo.GetAllAsync(null,
+                c => c. CreatedBy);
             return View(courses);
         }
 

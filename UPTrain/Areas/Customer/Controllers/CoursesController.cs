@@ -27,7 +27,7 @@ namespace UPTrain.Areas.Customer.Controllers
                 c => c.CourseId == id,
                 c => c.Lessons,
                 c => c.Quizzes,
-                c => c.Creator
+                c => c.CreatedBy
             );
 
             if (course == null)

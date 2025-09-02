@@ -31,7 +31,7 @@ namespace UPTrain.Repositories
                 query = query.Include(include);
             }
 
-            return await query.ToListAsync();
+            return await query.ToListAsync() ;
         }
 
 

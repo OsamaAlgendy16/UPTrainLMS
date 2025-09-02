@@ -21,13 +21,13 @@ namespace UPTrain.Models
 
         [Required]
         [Display(Name = "Created By")]
-        public string? CreatedBy { get; set; }
+        public string? CreatedById { get; set; }   // FK UserId
+
+        [ForeignKey("CreatedById")]
+        public User? CreatedBy { get; set; }   // Navigation property
 
         [StringLength(500)]
         public string? ImageUrl { get; set; }
-
-        [ForeignKey("CreatedBy")]
-        public User Creator { get; set; } = null!;
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]
