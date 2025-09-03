@@ -64,7 +64,7 @@ namespace UPTrain.Areas.Admin.Controllers
 
             return View(category);
         }
-
+        // pushing courses to github
         // POST: Categories/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
