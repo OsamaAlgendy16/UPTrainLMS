@@ -15,9 +15,9 @@ namespace UPTrain.Models
         [StringLength(10000)]
         public string? Description { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string? Category { get; set; }
+        public int CategoryId { get; set; }
+
+        public Category? Category { get; set; }
 
         [Required]
         [Display(Name = "Created By")]

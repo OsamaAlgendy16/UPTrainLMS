@@ -11,6 +11,7 @@ namespace UPTrain.Data
         }
 
         public DbSet<Courses> Courses { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<Point> Points { get; set; }
         public DbSet<Badge> Badges { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
@@ -27,7 +28,7 @@ namespace UPTrain.Data
 
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=LAPTOP-F7MI2PIT\\MSSQLSERVERMO;Initial Catalog=UPTrainDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;");
+                optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=UPTrainDB;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;");
             }
         }
 

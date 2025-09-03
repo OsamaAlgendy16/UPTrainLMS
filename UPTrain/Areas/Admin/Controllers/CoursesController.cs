@@ -12,11 +12,13 @@ namespace UPTrain.Areas.Admin.Controllers
     {
         private readonly ICourseRepository _courseRepo;
         private readonly UserManager<User> _userManager;
+        private readonly IRepository<Category> _categoryRepo;
 
-        public CoursesController(ICourseRepository courseRepo, UserManager<User> userManager)
+        public CoursesController(ICourseRepository courseRepo, UserManager<User> userManager, IRepository<Category> categoryRepo)
         {
             _courseRepo = courseRepo;
             _userManager = userManager;
+            _categoryRepo = categoryRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -30,7 +32,11 @@ namespace UPTrain.Areas.Admin.Controllers
         public async Task<IActionResult> Create()
         {
             var users = await _userManager.Users.ToListAsync();
+            var categories = await _categoryRepo.GetAllAsync(); 
+
             ViewBag.Users = new SelectList(users, "Id", "UserName");
+            ViewBag.Categories = new SelectList(categories, "CategoryId", "Name");
+
             return View();
         }
 
@@ -38,7 +44,17 @@ namespace UPTrain.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Courses course, IFormFile? ImageUrl)
         {
-           
+            if (!ModelState.IsValid)
+            {
+                var users = await _userManager.Users.ToListAsync();
+                var categories = await _categoryRepo.GetAllAsync();
+
+                ViewBag.Users = new SelectList(users, "Id", "UserName");
+                ViewBag.Categories = new SelectList(categories, "CategoryId", "Name");
+
+                return View(course);
+            }
+
             if (ImageUrl is not null && ImageUrl.Length > 0)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(ImageUrl.FileName);
@@ -49,9 +65,8 @@ namespace UPTrain.Areas.Admin.Controllers
                     await ImageUrl.CopyToAsync(stream);
                 }
 
-                course.ImageUrl = "/images/" + fileName; 
+                course.ImageUrl = "/images/" + fileName;
             }
-           
 
             course.CreatedDate = DateTime.Now;
 
@@ -61,6 +76,7 @@ namespace UPTrain.Areas.Admin.Controllers
             TempData["SuccessMessage"] = "Course created successfully!";
             return RedirectToAction(nameof(Index));
         }
+
 
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
